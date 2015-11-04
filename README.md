@@ -15,12 +15,18 @@ curl https://git.io/*.sh -L | sh
 ### dotfiles.sh
 ```sh
 # will clone or update https://github.com/gituser/dotfiles.git
+# if there is an installation script (install.sh) it will be executed
 curl https://git.io/dotfiles.sh -L | sh -s gituser
 
-# will clone or update https://github.com/gituser/repo.git
-curl https://git.io/dotfiles.sh -L | sh -s gituser/repo
+# if your repository is named not "dotfiles"
+# you can specify it in the second section
+curl https://git.io/dotfiles.sh -L | sh -s gituser/custom-repo
 
-# will update only, assumes the repo is already cloned 
+# if your installation script is named not "install.sh"
+# you can specify it in the third section
+curl https://git.io/dotfiles.sh -L | sh -s gituser/dotfiles/custom-script.sh
+
+# will update only, assumes the repo is already cloned
 curl https://git.io/dotfiles.sh -L | sh
 ```
 
