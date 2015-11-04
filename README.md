@@ -12,16 +12,20 @@ or
 curl https://git.io/*.sh -L | sh
 ```
 
-## @todo
 ### dotfiles.sh
 ```sh
-# will ask for your github user
-curl https://curl-sh.github.io/dotfiles.sh | sh
+# will clone or update https://github.com/gituser/dotfiles.git
+curl https://git.io/dotfiles.sh -L | sh -s gituser
 
-# will clone or update https://github.com/kaluzki/dotfiles.git
-curl https://curl-sh.github.io/dotfiles.sh | sh -c kaluzki
+# will clone or update https://github.com/gituser/repo.git
+curl https://git.io/dotfiles.sh -L | sh -s gituser/repo
+
+# will update only, assumes the repo is already cloned 
+curl https://git.io/dotfiles.sh -L | sh
 ```
 
+## @todo
 
+ * add support for interactive mode
  * add support for https://github.com/anishathalye/dotbot
  * add support for ansible
