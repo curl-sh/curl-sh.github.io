@@ -1,4 +1,39 @@
 #!/bin/sh
+#===============================================================================
+## SYNOPSIS
+##    curl https://git.io/dotfiles.sh -L | sh -s GITUSER
+##
+## DESCRIPTION
+##    clone or update your github repo https://github.com/GITUSER/dotfiles.git
+##    and apply the most appropriate install strategy (dotbot|shell-script)
+##
+##    dotbot:
+##    if there is a dotbot configuration file in your dotfiles repository
+##    .dotbot.yaml|dotbot.yaml|.dotbot.json|dotbot.json
+##    .install.conf.yaml|install.conf.yaml|.install.conf.json|install.conf.json
+##    the dotbot repo will be cloned to the temp directory and its binary
+##    will be executed with the found configuration
+##
+##    shell-script:
+##    if there is an installation script (install.sh) it will be executed
+##
+## EXAMPLES
+##    if your repository isn't called "dotfiles"
+##    you can specify its name in the second section
+##
+##    curl https://git.io/dotfiles.sh -L | sh -s user/repo
+##
+##    if your configuration file or installation script don't match
+##    the default name you can specify it in the third section
+##    .yaml and .json extensions are reserved for the configuration files
+##
+##    curl https://git.io/dotfiles.sh -L | sh -s user/dotfiles/config.yaml
+##    curl https://git.io/dotfiles.sh -L | sh -s user/repo/script.sh
+##
+## IMPLEMENTATION
+##    author          Demajn Kaluzki
+##    license         The MIT License (MIT)
+#===============================================================================
 
 #
 # dotbot strategy
