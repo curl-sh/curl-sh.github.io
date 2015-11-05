@@ -35,9 +35,9 @@
 ##    license         The MIT License (MIT)
 #===============================================================================
 
-#
-# dotbot strategy
-#
+##
+# DOTBOT strategy
+##
 _dotbot() {
   case $1 in
     *.json|*.yaml) custom_file="${1}${IFS}";;
@@ -67,7 +67,11 @@ install.conf.json"
   return 1
 }
 
-_exec() {
+##
+# MAIN function
+# parse cli parameters and delegate to different strategies
+##
+_main() {
   git_user=$(echo $1 | cut -d '/' -f1)
   git_repo=$(echo $1 | cut -s -d '/' -f2 | sed 's/\.git$//g')
   git_repo=${git_repo:-dotfiles}
@@ -93,4 +97,4 @@ _exec() {
   return 0
 }
 
-_exec $1
+_main $1
