@@ -5,7 +5,10 @@
 ##
 ## DESCRIPTION
 ##    clone or update your github repo https://github.com/GITUSER/dotfiles.git
-##    and apply the most appropriate install strategy (dotbot|shell-script)
+##    and apply the most appropriate install strategy (shell-script|dotbot)
+##
+##    shell-script:
+##    if there is an installation script (install.sh) it will be executed
 ##
 ##    dotbot:
 ##    if there is a dotbot configuration file in your dotfiles repository
@@ -13,9 +16,6 @@
 ##    .install.conf.yaml|install.conf.yaml|.install.conf.json|install.conf.json
 ##    the dotbot repo will be cloned to the temp directory and its binary
 ##    will be executed with the found configuration
-##
-##    shell-script:
-##    if there is an installation script (install.sh) it will be executed
 ##
 ## EXAMPLES
 ##    if your repository isn't called "dotfiles"
@@ -40,23 +40,15 @@
 ##
 _dotbot() {
   case $1 in
-    *.json|*.yaml) custom_file="${1}${IFS}";;
-    *) custom_file='';;
+    *.json|*.yaml) conf_candidates="${1}";;
+               "") conf_candidates=".dotbot.yaml dotbot.yaml .dotbot.json dotbot.json .install.conf.yaml install.conf.yaml .install.conf.json install.conf.json";;
+                *) conf_candidates="";;
   esac
-
-conf_candidates="${custom_file}.dotbot.yaml
-dotbot.yaml
-.dotbot.json
-dotbot.json
-.install.conf.yaml
-install.conf.yaml
-.install.conf.json
-install.conf.json"
 
   for conf_file in $conf_candidates
   do
     [ -f "$conf_file" ] && {
-      echo "${IFS}found dotbot configuration${IFS}"
+      echo "found dotbot configuration file ${conf_file}${IFS}"
       tmpdir=`mktemp -d -t dotbot.XXXXXXXX`
       git clone -q --recursive https://github.com/anishathalye/dotbot ${tmpdir}
       basedir=`pwd`
@@ -76,7 +68,6 @@ _main() {
   git_repo=$(echo $1 | cut -s -d '/' -f2 | sed 's/\.git$//g')
   git_repo=${git_repo:-dotfiles}
   git_file=$(echo $1 | cut -s -d '/' -f3)
-  git_file=${git_file:-'install.sh'}
 
   echo "${IFS}try to install dotfiles from https://github.com/${git_user}/${git_repo}.git/${git_file}${IFS}"
 
@@ -85,16 +76,24 @@ _main() {
       echo "git user is not set, expects 'curl https://git.io/dotfiles.sh -L | sh -s gituser'"
       return 1;
     fi
-    git clone -q --recursive https://github.com/${git_user}/${git_repo}.git .
+    git clone "-q --recursive https://github.com/${git_user}/${git_repo}.git ."
   }
-
   git submodule update --init --recursive
 
-  _dotbot $git_file || ([ -f "$git_file" ] && {
-    sh $git_file
-  })
+  # if there is a default install script, execute it and stop
+  [ "${git_file}" = "install.sh" -o "${git_file}" = "" -a -f "install.sh" ] && {
+    echo "found default installation script install.sh${IFS}"
+    sh install.sh
+    return 0
+  }
 
+  [ $# -gt 0 ] && shift
+
+  _dotbot "${git_file}${@}" || ([ -f "${git_file}" ] && {
+    echo "found installation script ${git_file}${IFS}"
+    sh "${git_file}"
+  })
   return 0
 }
 
-_main $1
+_main $@
