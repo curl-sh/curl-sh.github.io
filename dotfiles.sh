@@ -71,12 +71,17 @@ _main() {
 
   echo "${IFS}try to install dotfiles from https://github.com/${git_user}/${git_repo}.git/${git_file}${IFS}"
 
+  [ -d ~/${git_repo} ] || {
+    mkdir -p ~/${git_repo}
+  }
+  cd ~/${git_repo}
+
   [ -d .git ] || {
     if [ -z "$1" ]; then
       echo "git user is not set, expects 'curl https://git.io/dotfiles.sh -L | sh -s gituser'"
       return 1;
     fi
-    git clone "-q --recursive https://github.com/${git_user}/${git_repo}.git ."
+    git clone -q --recursive https://github.com/${git_user}/${git_repo}.git .
   }
   git submodule update --init --recursive
 
